@@ -4,6 +4,8 @@
 #
 # Copyright (c) 2009-2018 Simone Carletti <weppos@weppos.net>
 
+require "open-uri"
+
 module PublicSuffix
 
   # A {PublicSuffix::List} is a collection of one
@@ -37,7 +39,9 @@ module PublicSuffix
   #
   class List
 
+    LIST_URL = 'https://publicsuffix.org/list/public_suffix_list.dat'
     DEFAULT_LIST_PATH = File.expand_path("../../data/list.txt", __dir__)
+
 
     # Gets the default rule list.
     #
@@ -46,7 +50,7 @@ module PublicSuffix
     #
     # @return [PublicSuffix::List]
     def self.default(**options)
-      @default ||= parse(File.read(DEFAULT_LIST_PATH), options)
+      @default ||= parse(find_default, options)
     end
 
     # Sets the default rule list to +value+.
@@ -228,8 +232,40 @@ module PublicSuffix
 
     attr_reader :rules
 
-
     private
+
+    # Checks if the list has already been downloaded
+    # @return [Boolean]
+    def self.default_downloaded?
+      File.exist?(DEFAULT_LIST_PATH)
+    end
+
+    # Checks if the list is outdated
+    # @return [Boolean]
+    def self.default_outdated?(days = 7)
+      File.mtime(DEFAULT_LIST_PATH) < (DateTime.now - days).to_time
+    end
+
+    # Downloads a new version of the list from the URL. It returns true
+    # in case the download was successful, false otherwise
+    # @return [Boolean]
+    def self.download_default
+      open(DEFAULT_LIST_PATH, "wb") do |file|
+        file << open(LIST_URL).read
+      end
+      default_downloaded?
+    end
+
+    # Checks if the default list has been downloaded and if it needs
+    # to be updated acting accordingly. Later, it returns the string containing
+    # the list
+    # @return [String]
+    def self.find_default
+      if !self.default_downloaded? || self.default_outdated?
+        download_default
+      end
+      File.read(DEFAULT_LIST_PATH)
+    end
 
     def entry_to_rule(entry, value)
       entry.type.new(value: value, length: entry.length, private: entry.private)
@@ -238,6 +274,8 @@ module PublicSuffix
     def rule_to_entry(rule)
       Rule::Entry.new(rule.class, rule.length, rule.private)
     end
+
+    
 
   end
 end
