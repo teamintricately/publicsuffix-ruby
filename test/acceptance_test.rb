@@ -14,6 +14,9 @@ class AcceptanceTest < Minitest::Test
   ].freeze
 
   def test_valid
+    # Download updated default list
+    PublicSuffix::List.download_default
+
     VALID_CASES.each do |input, domain, results|
       parsed = PublicSuffix.parse(input)
       trd, sld, tld = results

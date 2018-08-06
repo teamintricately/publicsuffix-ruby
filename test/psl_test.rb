@@ -28,6 +28,10 @@ class PslTest < Minitest::Test
 
 
   def test_valid
+
+    # Download the updated version of the tests
+    PublicSuffix::List.download_default
+
     # Parse the PSL and run the tests
     data = File.read(PublicSuffix::List::DEFAULT_LIST_PATH)
     PublicSuffix::List.default = PublicSuffix::List.parse(data)
