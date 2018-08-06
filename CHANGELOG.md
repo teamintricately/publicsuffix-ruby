@@ -1,5 +1,8 @@
 # Changelog
 
+#### Release 4.0
+- CHANGED: The default suffix list is now downloaded and updated automatically. First version created by intricately team after fork
+
 
 #### Release 3.0.2
 
