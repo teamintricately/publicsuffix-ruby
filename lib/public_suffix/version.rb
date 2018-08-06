@@ -6,5 +6,5 @@
 
 module PublicSuffix
   # The current library version.
-  VERSION = "4.0".freeze
+  VERSION = "3.0.2".freeze
 end
