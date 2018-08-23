@@ -210,7 +210,7 @@ module PublicSuffix
         end
 
         index += 1
-        break if index >= (parts.size - 1)
+        break if index >= parts.size
         query = parts[index] + DOT + query
       end
 
