@@ -1,5 +1,10 @@
 # Changelog
 
+
+#### Release 3.1.0
+
+- CHANGED: First Intricately version. Bug fixed when the suffix is exactly the same as the requested domain
+
 #### Release 3.0.2
 
 - CHANGED: Updated definitions.
